@@ -5,6 +5,12 @@ set -e
 DAIKON_TARBALL=$1
 DAIKON_PARENT_DIR=`dirname $1`
 
+if [ ! -f "$DAIKON_TARBALL" ] ; then
+    echo "DAIKON_TARBALL=$DAIKON_TARBALL does not exist"
+    ls -al $DAIKON_PARENT_DIR
+    exit 2
+fi
+
 echo build_daikon.sh: DAIKON_TARBALL=$DAIKON_TARBALL
 echo build_daikon.sh: DAIKON_PARENT_DIR=$DAIKON_PARENT_DIR
 echo build_daikon.sh: JAVA_HOME=${JAVA_HOME}
