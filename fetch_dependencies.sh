@@ -82,6 +82,8 @@ if [[ -z "${DAIKONDIR}" ]]; then
     DAIKONVERSION=`curl --fail -s $DAIKONBASEURL/download/doc/VERSION | xargs echo -n`
     DAIKON_SRC=$DAIKONBASEURL/download/daikon-$DAIKONVERSION.tar.gz
     DAIKON_SRC_FILE=$(basename ${DAIKON_SRC})
+    echo DAIKONVERSION=$DAIKONVERSION
+    echo DAIKON_SRC=$DAIKON_SRC
 
     if [ ! -e $DAIKON_SRC_FILE ]; then
         rm -rf daikon-src
