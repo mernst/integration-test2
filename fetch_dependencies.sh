@@ -87,6 +87,7 @@ if [[ -z "${DAIKONDIR}" ]]; then
         rm -rf daikon-src
 
         if curl -fLo $DAIKON_SRC_FILE $DAIKON_SRC; then
+	    ls -l `pwd`/$DAIKON_SRC_FILE
             bash ../build_daikon.sh `pwd`/$DAIKON_SRC_FILE
             cp daikon-src/daikon.jar ../libs/daikon.jar
         else
