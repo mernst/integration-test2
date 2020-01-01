@@ -18,7 +18,7 @@ echo build_daikon.sh: JAVA_HOME=${JAVA_HOME}
 pushd $DAIKON_PARENT_DIR
     DAIKON_SRC_DIR=`tar -tzf ${DAIKON_TARBALL} | head -1 | cut -f1 -d"/"`
     echo build_daikon.sh: DAIKON_SRC_DIR=${DAIKON_SRC_DIR}
-    tar xzf $DAIKON_TARBALL
+    tar xvzf $DAIKON_TARBALL
     mv $DAIKON_SRC_DIR daikon-src
     pushd daikon-src
         export DAIKONDIR=`pwd`
