@@ -16,8 +16,8 @@
     {
       "git-url": "https://github.com/lessthanoptimal/BoofCV.git",
       "git-ref": "16fff968dbbe07af4a9cb14395a89cde18ffb72e",
-      "build": "gradle compileJava",
-      "clean": "gradle clean"
+      "build": "./gradlew compileJava",
+      "clean": "./gradlew clean"
     },
 
     "catalano":
@@ -60,8 +60,8 @@
     {
       "git-url": "https://github.com/jMonkeyEngine/jmonkeyengine.git",
       "git-ref": "977610bbd7d9f000e4f79804465eec6a743b3789",
-      "build": "gradle compileJava",
-      "clean": "gradle clean"
+      "build": "./gradlew compileJava",
+      "clean": "./gradlew clean"
     },
 
     "jbox2d":
@@ -126,9 +126,9 @@
     {
       "git-url": "https://github.com/lessthanoptimal/ejml.git",
       "git-ref": "2a2bfb58d789148d06fc002e7118e5f870012683",
-      "build": "gradle jar",
-      "jar": "gradle jar",
-      "clean": "gradle clean"
+      "build": "./gradlew jar",
+      "jar": "./gradlew jar",
+      "clean": "./gradlew clean"
     },
     "ojalgo":
     {
