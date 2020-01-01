@@ -27,6 +27,8 @@ do
       :
     else
       echo Fetching ${base} failed.
+      curl -fLo ${base} ${jar}
+      echo Fetching ${base} failed.
       exit 1;
     fi
 done
@@ -82,19 +84,25 @@ if [[ -z "${DAIKONDIR}" ]]; then
     DAIKON_SRC_FILE=$(basename ${DAIKON_SRC})
 
     if [ ! -e $DAIKON_SRC_FILE ]; then
-    rm -rf daikon-src
+        rm -rf daikon-src
 
-    if curl -fLo $DAIKON_SRC_FILE $DAIKON_SRC; then
-        bash ../build_daikon.sh `pwd`/$DAIKON_SRC_FILE
-        cp daikon-src/daikon.jar ../libs/daikon.jar
-    else
-        echo "Fetching $DAIKON_SRC failed."
-        exit 1;
-    fi
+        if curl -fLo $DAIKON_SRC_FILE $DAIKON_SRC; then
+            bash ../build_daikon.sh `pwd`/$DAIKON_SRC_FILE
+            cp daikon-src/daikon.jar ../libs/daikon.jar
+        else
+            echo "Fetching $DAIKON_SRC failed."
+	    echo DAIKONBASEURL=$DAIKONBASEURL
+	    echo DAIKONVERSION=$DAIKONVERSION
+	    echo DAIKON_SRC=$DAIKON_SRC
+	    echo DAIKON_SRC_FILE=$DAIKON_SRC_FILE
+            exit 1;
+        fi
 
     else
         echo "Daikon already up to date."
     fi
+else
+    echo "Skipped Daikon"
 fi
 
 if [ -d "ontology" ]; then
