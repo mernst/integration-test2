@@ -16,12 +16,9 @@ echo build_daikon.sh: DAIKON_PARENT_DIR=$DAIKON_PARENT_DIR
 echo build_daikon.sh: JAVA_HOME=${JAVA_HOME}
 
 pushd $DAIKON_PARENT_DIR
-    echo Start: tar -tzf ${DAIKON_TARBALL}
-    tar -tzf ${DAIKON_TARBALL}
-    echo End: tar -tzf ${DAIKON_TARBALL}
-    echo Through head:
-    tar -tzf ${DAIKON_TARBALL} | head -1
-    echo Now the whole thing:
+    # This sometimes causes "tar: write error" but the variable seems to be
+    # set correctly.
+    echo "Ignore \"tar: write error\" that may follow"
     tar -tzf ${DAIKON_TARBALL} | head -1 | cut -f1 -d"/"
     DAIKON_SRC_DIR=`tar -tzf ${DAIKON_TARBALL} | head -1 | cut -f1 -d"/"`
     echo build_daikon.sh: DAIKON_SRC_DIR=${DAIKON_SRC_DIR}
