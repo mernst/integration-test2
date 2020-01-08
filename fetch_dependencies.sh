@@ -111,7 +111,8 @@ fi
 if [ -d "ontology" ]; then
     rm -rf ontology
 fi
-git clone https://github.com/pascaliUWat/ontology.git
+# git clone https://github.com/pascaliUWat/ontology.git
+git clone https://github.com/mernst/ontology.git --branch fix-gradle-invocation
 
 pushd ontology &> /dev/null
 export TRAVIS_BUILD_DIR=`pwd`
