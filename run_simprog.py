@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os, sys
 import common
@@ -48,7 +48,7 @@ def generate_project_kernel(project, cluster_json=None):
   
   if cluster_json:
     print("Using clustering output for node relabeling:")
-    graph_kernel_cmd = ['python',
+    graph_kernel_cmd = ['python3',
                         common.get_simprog('precompute_kernel.py'),
                         os.path.join(dot.dot_dir(project), out_dir),
                         kernel_file_path,
@@ -56,7 +56,7 @@ def generate_project_kernel(project, cluster_json=None):
                         ]
     common.run_cmd(graph_kernel_cmd, True)
   else:
-    graph_kernel_cmd = ['python',
+    graph_kernel_cmd = ['python3',
                         common.get_simprog('precompute_kernel.py'),
                         os.path.join(dot.dot_dir(project), out_dir),
                         kernel_file_path

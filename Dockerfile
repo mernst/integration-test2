@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
     libgraphviz-dev \
     maven \
     openjdk-8-jdk \
-    python2.7-dev \
-    python-pip \
+    python3-dev \
+    python3-pip \
     wamerican \
     vim \
     ruby1.9

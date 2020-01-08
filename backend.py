@@ -57,7 +57,7 @@ def generate_project_kernel(project, cluster_json=None):
   kernel_file_path = dot.get_kernel_path(project, out_dir)
 
   if cluster_json:
-    graph_kernel_cmd = ['python',
+    graph_kernel_cmd = ['python3',
                         common.get_simprog('precompute_kernel.py'),
                         project_dir,
                         kernel_file_path,
@@ -65,7 +65,7 @@ def generate_project_kernel(project, cluster_json=None):
                         ]
     common.run_cmd(graph_kernel_cmd, 'graphkernel')
   else:
-    graph_kernel_cmd = ['python',
+    graph_kernel_cmd = ['python3',
                         common.get_simprog('precompute_kernel.py'),
                         project_dir,
                         kernel_file_path

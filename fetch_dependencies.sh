@@ -3,6 +3,8 @@
 # Fail the whole script if any command fails
 set -e
 
+set -x
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 pushd ${DIR} &> /dev/null
 

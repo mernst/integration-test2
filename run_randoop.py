@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os,sys,common
 import time
 
 def main():
   if not os.path.exists(common.CORPUS_DIR):
-    print "Please run python fetch_corpus.py first to fetch the corpus."
+    print "Please run `python3 fetch_corpus.py` first to fetch the corpus."
     sys.exit(1)
     return
 

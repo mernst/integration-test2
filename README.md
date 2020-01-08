@@ -10,12 +10,12 @@
 Tested on Ubuntu 14.04.
 
 - Programs to download tool dependencies and build corpus projects
-  - `sudo apt-get install ant git gradle maven mercurial python2.7-dev python-pip graphviz libgraphviz-dev curl`
+  - `sudo apt-get install ant git gradle maven mercurial python3-dev python3-pip graphviz libgraphviz-dev curl`
 - Java 8 JDK
   - JAVA_HOME environment variable must be set to the location of your JDK install.
-- Python 2.7 and some packages
-  - install required packages with `sudo pip install -r requirements.txt`
-     - if you don't have sudo privileges, install with `pip install --user -r requirements.txt`
+- Python 3 and some packages
+  - install required packages with `sudo pip3 install -r requirements.txt`
+     - if you don't have sudo privileges, install with `pip3 install --user -r requirements.txt`
 
 ## Setup (manual)
 
@@ -23,7 +23,7 @@ Tested on Ubuntu 14.04.
 
 This downloads all the jars and dependencies, and compiles them. Only needs to be run once unless you need to update tools.
 
-    python fetch_corpus.py [<projectset>]
+    python3 fetch_corpus.py [<projectset>]
 
 This fetches the corpus to be processed. With no arguments, `fetch_corpus.py` will download all available projects. It can also be given a named subset of the corpus (as defined at the start of `corpus.json`) or a list of projects to download.
 
@@ -54,7 +54,7 @@ Then, from another terminal, run
 
 Whether using the /persist directory or not, you can then run (inside Docker)
 
-    python fetch_corpus.py
+    python3 fetch_corpus.py
 
 ## Running
 
