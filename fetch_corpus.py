@@ -29,7 +29,7 @@ def run_cmd(cmd):
 
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in iter(process.stdout.readline, b''):
-        stats['output'] = stats['output'] + line
+        stats['output'] = stats['output'] + line.decode('utf-8')
         write_log(line)
     process.stdout.close()
     process.wait()
