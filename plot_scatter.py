@@ -1,18 +1,24 @@
+import os
+import sys
+import re
+from collections import defaultdict
+import argparse
+
 import numpy
 from matplotlib import pyplot
 from matplotlib.backends.backend_pdf import PdfPages
-import os, sys, re
-from collections import defaultdict
-import argparse
-import common, dot
+
 from nltk.stem.snowball import *
 
+import common
+import dot
 """Read the program similarity result files and plot text similarity vs. program similarity"""
+
 
 def compute_method_text_similarity(m1_full_str, m2_full_str, name_re, camel_re, stemmer):
     # (0) get just the name of the method
     # (1) remove all non-letter characters in the name
-    # (2) split using camel case 
+    # (2) split using camel case
     # (3) stem all words
     # (4) count the number of matched stemmed words (including duplicates)
     # (5) score = len(all matched words)/len(all stemmed words)
@@ -40,16 +46,18 @@ def compute_method_text_similarity(m1_full_str, m2_full_str, name_re, camel_re, 
     m1_word_dict = defaultdict(int)
     m2_word_dict = defaultdict(int)
     for w1 in m1_stemmed_word_lst:
-        m1_word_dict[w1]+=1
+        m1_word_dict[w1] += 1
     for w2 in m2_stemmed_word_lst:
-        m2_word_dict[w2]+=1
+        m2_word_dict[w2] += 1
     common_word_set = set(m1_stemmed_word_lst) & set(m2_stemmed_word_lst)
     common_word_len = 0
     for wd in common_word_set:
-        common_word_len += len(wd)*2*min(m1_word_dict[wd], m2_word_dict[wd])
+        common_word_len += len(wd) * 2 * min(m1_word_dict[wd], m2_word_dict[wd])
     # (5):
-    score = float(common_word_len)/(sum([len(w) for w in m1_stemmed_word_lst]) + sum([len(w) for w in m2_stemmed_word_lst]))
+    score = float(common_word_len) / (sum([len(w) for w in m1_stemmed_word_lst]) +
+                                      sum([len(w) for w in m2_stemmed_word_lst]))
     return score
+
 
 def get_method_word_list(method_str, camel_re):
     word_lst = []
@@ -57,11 +65,15 @@ def get_method_word_list(method_str, camel_re):
         word_lst.append(match.group(0))
     return word_lst
 
+
 def compile_camel_case_re_pattern():
     return re.compile(r".+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)")
 
+
 def compile_method_re_pattern():
-    return re.compile(r"<[\w\d_$\.]+\s*:\s+[\w\d_$.\[\]]+\s+<*([\w\d_$\']+)>*\([\[\].\w\d_$\,\s]*\)>")
+    return re.compile(
+        r"<[\w\d_$\.]+\s*:\s+[\w\d_$.\[\]]+\s+<*([\w\d_$\']+)>*\([\[\].\w\d_$\,\s]*\)>")
+
 
 def get_method_name_only(method_full_str, re_prog):
     #Example1: <org.dyn4j.dynamics.joint.RevoluteJoint: void setMotorEnabled(boolean)>
@@ -75,16 +87,19 @@ def get_method_name_only(method_full_str, re_prog):
     m = re_prog.match(method_full_str)
     if m:
         return m.group(1)
-    else:
-        print("Should always find a method name. The fully qualitified method name was:")
-        print(method_full_str)
-        sys.exit(0)
+
+    print("Should always find a method name. The fully qualitified method name was:")
+    print(method_full_str)
+    sys.exit(0)
+
 
 def create_stemmer():
     return SnowballStemmer('english')
 
+
 def stem_word_lst(stemmer, word_lst):
     return [stemmer.stem(w) for w in word_lst]
+
 
 def get_dot_method_map(proj_lst):
     dot_method_map = {}
@@ -102,19 +117,20 @@ def get_dot_method_map(proj_lst):
                     dot_method_map[method_dot_path] = method_name
     return dot_method_map
 
+
 def parse_result_file(result_file, dot_method_map):
     """
-    file format: 
-    path_to_dotA: 
+    file format:
+    path_to_dotA:
     path_to_similar_dot1 , score
     ...
     path_to_similar_dot5 , score
-    
+
     path_to_dotB:
     ...
     """
 
-    method_dict = {} # method_dict[method] = [similar_method, prog_score, text_score]
+    method_dict = {}  # method_dict[method] = [similar_method, prog_score, text_score]
 
     stemmer = create_stemmer()
     name_re = compile_method_re_pattern()
@@ -123,25 +139,27 @@ def parse_result_file(result_file, dot_method_map):
     count = 0
     current_dot = None
     with open(result_file, "r") as fi:
-        for line in fi:                        
+        for line in fi:
             line = line.rstrip('\n')
-            if len(line)>0 and line[-1]==":":
+            if len(line) > 0 and line[-1] == ":":
                 current_dot = line[:-1]
                 current_method = dot_method_map[current_dot]
-            else:                        
+            else:
                 linarr = line.split(" , ")
-                if linarr[0][-3:]=="dot":
+                if linarr[0][-3:] == "dot":
                     # consider most similar method only
                     if count == 0:
                         similar_method = dot_method_map[linarr[0]]
                         # compute word based similarity
                         prog_score = float(linarr[1])
-                        text_score = compute_method_text_similarity(current_method, similar_method, name_re, camel_re, stemmer)
+                        text_score = compute_method_text_similarity(current_method, similar_method,
+                                                                    name_re, camel_re, stemmer)
                         method_dict[current_method] = [similar_method, prog_score, text_score]
                     count += 1
                     if count == 5:
                         count = 0
         return method_dict
+
 
 def plot_scatter(x, x_axis_label, y, y_axis_label, fig_file, title=""):
     """
@@ -160,15 +178,20 @@ def plot_scatter(x, x_axis_label, y, y_axis_label, fig_file, title=""):
     pyplot.ylabel(y_axis_label)
     pyplot.xlim(-0.05, 1.05)
     pyplot.ylim(-0.05, 1.05)
-    pp = PdfPages(fig_file+".pdf")
+    pp = PdfPages(fig_file + ".pdf")
     pyplot.savefig(pp, format="pdf")
     pp.close()
+
 
 def main():
 
     parser = argparse.ArgumentParser()
     #parser.add_argument("-nc", "--nocluster", required=True, type=str, help="path to the result folder without relabeling")
-    parser.add_argument("-c", "--cluster", required=True, type=str, help="path to the result folder with relabeling")
+    parser.add_argument("-c",
+                        "--cluster",
+                        required=True,
+                        type=str,
+                        help="path to the result folder with relabeling")
     parser.add_argument("-f", "--fig", type=str, help="path to the figure folder")
     parser.add_argument("-s", "--strategy", required=True, type=str, help="name of the strategy")
 
@@ -176,20 +199,21 @@ def main():
 
     proj_lst = common.LIMITED_PROJECT_LIST
 
-    fig_dir = args.strategy+"_scatter"
+    fig_dir = args.strategy + "_scatter"
     if args.fig:
         fig_dir = args.fig
     common.mkdir(fig_dir)
-    
+
     dot_method_map = get_dot_method_map(proj_lst)
 
     for proj in proj_lst:
-        print(proj+":")
+        print(proj + ":")
         proj_result_file_name = proj + "_result.txt"
-        method_dict = parse_result_file(os.path.join(args.cluster, proj_result_file_name), dot_method_map)
+        method_dict = parse_result_file(os.path.join(args.cluster, proj_result_file_name),
+                                        dot_method_map)
         xs = []
         ys = []
-        
+
         count11 = 0
         for m in method_dict.keys():
             x_v = method_dict[m][1]
@@ -201,14 +225,16 @@ def main():
                 count11 += 1
         print("(1,1): {0}".format(count11))
         # save xs and ys
-        with open(os.path.join(fig_dir, proj+"_data.txt"), "w") as df:
+        with open(os.path.join(fig_dir, proj + "_data.txt"), "w") as df:
             df.write(",".join([str(x) for x in xs]))
             df.write("\n")
             df.write(",".join([str(y) for y in ys]))
-        plot_scatter(xs, "semantic similarity", ys, "name similarity", os.path.join(fig_dir, proj), proj+" : "+args.strategy)
+        plot_scatter(xs, "semantic similarity", ys, "name similarity", os.path.join(fig_dir, proj),
+                     proj + " : " + args.strategy)
         # correlation:
-        print(numpy.corrcoef(xs,ys))
+        print(numpy.corrcoef(xs, ys))
         print("\n")
+
 
 if __name__ == "__main__":
     main()

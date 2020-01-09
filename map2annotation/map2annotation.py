@@ -1,15 +1,19 @@
-import sys, os
+import sys
+import os
 import json
 import argparse
 import glob2 as glob
-import common, pa2checker, frontend_pa_inference
+import common
+import pa2checker
+import frontend_pa_inference
 
 MAP_WORKING_DIR = os.path.dirname(os.path.realpath(__file__))
 
-JAIF_FILE_ONTOLOGY_HEADER ="\
+JAIF_FILE_ONTOLOGY_HEADER = "\
 package ontology.qual:\n\
   annotation @Ontology:\n\
     enum ontology.qual.OntologyValue[] values\n"
+
 
 def field_mappings_to_annotation(project_list, json_file):
     with open(json_file) as data_file:
@@ -33,8 +37,10 @@ def field_mappings_to_annotation(project_list, json_file):
     for project in project_list:
         insert_anno_to_project(project, corpus_jaif_file)
 
+
 def run_anno_inference(project):
     frontend_pa_inference.run_inference(project)
+
 
 def refactor_multi_decl(project):
     project_dir = common.get_project_dir(project)
@@ -42,9 +48,11 @@ def refactor_multi_decl(project):
     refactor_cmd = [refactor_script, project_dir]
     common.run_cmd(refactor_cmd)
 
+
 def init_multi_decl_refactor():
     FETCH_TOOL_SCRIPT = os.path.join(MAP_WORKING_DIR, "fetch_map2anno_tools.sh")
     common.run_cmd(FETCH_TOOL_SCRIPT)
+
 
 def type_mappings_to_rules(json_file):
     with open(json_file) as data_file:
@@ -58,6 +66,7 @@ def type_mappings_to_rules(json_file):
 
     common.recompile_checker_framework()
 
+
 def insert_anno_to_project(project, jaif_file):
     """ Insert annotation info in the ${jaif_file} to ${project}.
     """
@@ -70,8 +79,10 @@ def insert_anno_to_project(project, jaif_file):
         insert_cmd.extend(java_files)
         common.run_cmd(insert_cmd, 'map2anno')
 
+
 def create_corpus_jaif(mappings):
     return create_jaif_file("corpus", mappings)
+
 
 def create_jaif_file(project, mappings):
     """ create a {project_name}.jaif file under project_dir
@@ -85,7 +96,7 @@ def create_jaif_file(project, mappings):
 
     jaif_file = os.path.join(project_dir, "{}.jaif".format(project))
 
-    print ("Writing project {} annotated info to file {}".format(project, jaif_file))
+    print("Writing project {} annotated info to file {}".format(project, jaif_file))
 
     with open(jaif_file, 'w') as out_file:
         # write ontology package info
@@ -110,8 +121,10 @@ def create_jaif_file(project, mappings):
                 out_file.write("  class {}:\n".format(clazz))
                 for field, value_set in fields.items():
                     out_file.write("    field {}:\n".format(field))
-                    out_file.write("    @Ontology(values={{{value_name}}})\n".format(value_name=', '.join(value_set)))
+                    out_file.write("    @Ontology(values={{{value_name}}})\n".format(
+                        value_name=', '.join(value_set)))
     return jaif_file
+
 
 def parse_field(qualified_field):
     """ given a ${qualified_field} which describes a full qualified path to a class field with value like
@@ -119,6 +132,7 @@ def parse_field(qualified_field):
         (xxx.xxx.xxx, Class, field)
     """
     return tuple(qualified_field.rsplit('.', 2))
+
 
 def convert_2_ontology_value(ontology_set):
     """ 1. clean up the ontology source code back to unchanged git version
@@ -130,14 +144,15 @@ def convert_2_ontology_value(ontology_set):
         pa2checker.insert_ontology_value(new_ontology)
     common.recompile_checker_framework()
 
+
 def main():
     parser = argparse.ArgumentParser(description='command line interface for map2annotation')
-    parser.add_argument('--type-mapping',dest='type_mapping_file')
+    parser.add_argument('--type-mapping', dest='type_mapping_file')
     parser.add_argument('--field-mapping', dest='field_mapping_file')
     parser.add_argument('--project-list', dest='projects', help='project_nameA,project_nameB,...')
     args = parser.parse_args()
     if args.type_mapping_file is None and args.field_mapping_file is None:
-        print "error, required at least one mapping file to be indicated."
+        print("error, required at least one mapping file to be indicated.")
         parser.print_help()
         sys.exit(1)
 
@@ -148,7 +163,7 @@ def main():
         project_list = [project for project in project_list if project in arg_projects]
 
     pa2checker.revert_checker_source()
-    
+
     if not args.type_mapping_file is None:
         type_mappings_to_rules(args.type_mapping_file)
 
@@ -157,6 +172,7 @@ def main():
 
     for project in project_list:
         run_anno_inference(project)
+
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,5 @@
-from common import DLJC_OUTPUT_DIR, get_project_dir
 import os
+from common import DLJC_OUTPUT_DIR, get_project_dir
 
 PROJ_DOT_DIR_DICT = {}
 PROJ_DOT_DIR_DICT['boofcv'] = ['_main_ip_build_classes_main']
@@ -8,43 +8,45 @@ PROJ_DOT_DIR_DICT['dyn4j'] = ['_bin']
 PROJ_DOT_DIR_DICT['jbox2d'] = ['_jbox2d-library_target_classes']
 PROJ_DOT_DIR_DICT['jmonkeyengine'] = ['_jme3-core_build_classes_main']
 
+
 def find_dot_name(method_name, method_file):
-  with open(method_file, "r") as fi:
-    for line in fi:
-      line = line.rstrip()
-      arr = line.split('\t')
-      method_sig = arr[0]
-      dot_name = arr[1]
-      if method_name in method_sig:
-        return dot_name
-  return None
+    with open(method_file, "r") as fi:
+        for line in fi:
+            line = line.rstrip()
+            arr = line.split('\t')
+            method_sig = arr[0]
+            dot_name = arr[1]
+            if method_name in method_sig:
+                return dot_name
+    return None
+
 
 def dot_dir(project_name):
-  return os.path.join(get_project_dir(project_name),
-                      DLJC_OUTPUT_DIR,
-                      "dot")
+    return os.path.join(get_project_dir(project_name), DLJC_OUTPUT_DIR, "dot")
+
 
 def dot_dirs(project_name):
-  dd = dot_dir(project_name)
+    dd = dot_dir(project_name)
 
-  if project_name in PROJ_DOT_DIR_DICT:
-    return PROJ_DOT_DIR_DICT[project_name]
-  elif os.path.exists(dd):    
-    return os.listdir(dd)
-  else:
+    if project_name in PROJ_DOT_DIR_DICT:
+        return PROJ_DOT_DIR_DICT[project_name]
+    if os.path.exists(dd):
+        return os.listdir(dd)
     print("dd: {0}".format(dd))
     return None
 
+
 def get_dot_path(project_name, output_dir, dot_name):
-  return os.path.join(dot_dir(project_name),
-                      output_dir,
-                      dot_name)
+    return os.path.join(dot_dir(project_name), output_dir, dot_name)
+
 
 def get_kernel_path(project_name, output_dir):
-  return os.path.join(dot_dir(project_name), output_dir, 'kernel.txt')
+    return os.path.join(dot_dir(project_name), output_dir, 'kernel.txt')
+
 
 def get_method_path(project_name, output_dir):
-  return os.path.join(dot_dir(project_name), output_dir, 'methods.txt')
+    return os.path.join(dot_dir(project_name), output_dir, 'methods.txt')
+
 
 # def get_method_summary_from_dot_path(dot_path):
 #   arr = dot_path.split(os.sep)
