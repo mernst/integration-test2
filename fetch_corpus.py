@@ -29,7 +29,8 @@ def run_cmd(cmd):
 
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in iter(process.stdout.readline, b''):
-        stats['output'] = stats['output'] + line.decode('utf-8')
+        line = line.decode('utf-8')
+        stats['output'] = stats['output'] + line
         write_log(line)
     process.stdout.close()
     process.wait()

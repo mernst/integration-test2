@@ -77,7 +77,8 @@ def run_cmd(cmd, output=False, timeout=None):
             timer.start()
 
         for line in iter(process.stdout.readline, b''):
-            stats['output'] = stats['output'] + line.decode('utf-8')
+            line = line.decode('utf-8')
+            stats['output'] = stats['output']
             output(line)
 
         process.stdout.close()
