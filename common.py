@@ -45,7 +45,7 @@ def run_cmd(cmd, output=False, timeout=None):
     out = None
     out_file = None
 
-    if isinstance(cmd, basestring):
+    if isinstance(cmd, str):
         friendly_cmd = cmd
         cmd = cmd.split()
     else:
@@ -53,7 +53,7 @@ def run_cmd(cmd, output=False, timeout=None):
 
     if hasattr(output, 'write'):
         out = output
-    elif isinstance(output, basestring):
+    elif isinstance(output, str):
         out_file = os.path.join(OUTPUT_DIR, output + '.log')
         out = open(out_file, 'a')
 
